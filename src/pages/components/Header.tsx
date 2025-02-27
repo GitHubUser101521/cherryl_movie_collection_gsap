@@ -1,12 +1,32 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 
 function Header() {
     const inputRef = useRef<HTMLInputElement>(null)
+    const [ isHovering, setIsHovering ] = useState(false)
     const navigate = useNavigate()
+    const buttonRef = useRef<HTMLButtonElement>(null)
+
+    useGSAP(() => {
+        if (buttonRef.current) {
+          if (isHovering) {
+            gsap.to(buttonRef.current, { scale: 1.2, duration: 0.2 });
+          } else {
+            gsap.to(buttonRef.current, { scale: 1, duration: 0.2 });
+          }
+        }
+    }, [isHovering])
 
     const handleQuery = (e: React.FormEvent) => {
         e.preventDefault()
+
+        gsap.context(() => { 
+            const tl = gsap.timeline();
+            tl.to(buttonRef.current, { scale: 0.7, duration: 0.1 });
+            tl.to(buttonRef.current, { scale: 1, duration: 0.2 });
+        }, buttonRef)
 
         if (!inputRef.current?.value) return
 
@@ -32,9 +52,15 @@ function Header() {
                     ref={inputRef}
                 />
                 <button
+                    ref={buttonRef}
                     type='submit'
                     className='w-36 bg-red  font-bold rounded-full py-2'
-                >Search</button>
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                    onClick={handleQuery}
+                >
+                    Search
+                </button>
             </form>
 
             <div className='flex gap-4 items-center'>
