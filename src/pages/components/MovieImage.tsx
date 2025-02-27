@@ -8,7 +8,7 @@ function MovieImage(movie: SimpleMovieType) {
     return (
         <div 
             key={movie.IMDB_ID} 
-            className='border border-white flex justify-center items-center relative' 
+            className='border border-white flex justify-center items-center relative animate-card' 
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
         >
